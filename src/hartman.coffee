@@ -34,7 +34,7 @@ defaults =
 
 ensureTestDir = ->
   unless fs.existsSync test
-    fs.mkdirSync test
+    mkdirp.sync test
 
 generate = ->
   glob "#{src}/**/*#{ext}", (err, files) ->

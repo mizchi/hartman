@@ -37,7 +37,7 @@
 
   ensureTestDir = function() {
     if (!fs.existsSync(test)) {
-      return fs.mkdirSync(test);
+      return mkdirp.sync(test);
     }
   };
 

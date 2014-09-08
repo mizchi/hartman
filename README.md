@@ -4,7 +4,7 @@ Automatic unit test generator by dirs. Good for you.
 
 
 ```
-npm install -g mizchi/hartman
+npm install -g hartman
 ```
 
 ## How to use

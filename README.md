@@ -22,6 +22,14 @@ test/
 	bar.coffee
 ```
 
+Generate file
+
+```coffee
+# require '../src/foo'
+describe "src/foo", ->
+  it "should be written"
+```
+
 ## LICENSE
 
 MIT

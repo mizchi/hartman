@@ -1,6 +1,8 @@
 # Hartman
 
-Automatic unit test generator by dirs. Good for you.
+Automatic mocha style unit test generator by dirs for common.js envinroment(node.js browserify).
+
+Good for you.
 
 
 ```

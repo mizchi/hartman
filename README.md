@@ -40,7 +40,8 @@ hartman.json
   "testDir": "spec",
   "inputType": "coffee",
   "outputType": "ts",
-  "suffix": "spec"
+  "suffix": "spec",
+  "excludes": ['src/ex.coffee']
 }
 ```
 

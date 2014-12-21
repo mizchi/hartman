@@ -4,7 +4,6 @@ Automatic mocha style unit test generator by dirs for common.js envinroment(node
 
 Good for you.
 
-
 ```
 npm install -g hartman
 ```
@@ -12,25 +11,40 @@ npm install -g hartman
 ## How to use
 
 ```
-$ hartman --src app --test test --ext ".coffee"
+$ hartman --src src --test test --input js --ouput coffee --suffix spec
 ```
 
 ```
 app/
-	foo.coffee
-	bar.coffee
-test/
-	foo.coffee
-	bar.coffee
+	foo.js
+	bar.js
+spec/
+	foo-spec.coffee
+	bar-spec.coffee
 ```
 
-Generate file
+Generated file
 
 ```coffee
 # require '../src/foo'
 describe "src/foo", ->
   it "should be written"
 ```
+
+## Option files
+
+hartman.json
+```
+{
+  "srcDir": "src",
+  "testDir": "spec",
+  "inputType": "coffee",
+  "outputType": "ts",
+  "suffix": "spec"
+}
+```
+
+and run `hartman`
 
 ## LICENSE
 

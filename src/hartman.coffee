@@ -22,6 +22,7 @@ testDir = argv.test
 inputType = argv.input
 outputType = argv.output
 suffix = '-'+argv.suffix
+excludes = []
 
 # Override by setting file
 cwd = process.cwd()
@@ -33,6 +34,7 @@ if fs.existsSync optPath
   inputType = opt.inputType if opt.inputType
   outputType = opt.outputType if opt.outputType
   suffix = '-'+opt.suffix if opt.suffix
+  excludes = opt.excludes if opt.excludes
 
 defaultHandlerByType =
   coffee: (inputType, inputPath, dest,  depth) ->
@@ -72,6 +74,10 @@ generate = ->
   ext = Exts[inputType]
   glob "#{srcDir}/**/*#{ext}", (err, files) ->
     files.map (fpath) ->
+      for exCond in excludes
+        if fpath.indexOf(exCond) is 0
+          return
+
       inputPath = fpath
       outputPath = fpath
         .replace(srcDir, testDir) # rootdir

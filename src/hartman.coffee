@@ -7,24 +7,56 @@ mkdirp = require 'mkdirp'
 argv = require('optimist')
   .default('test', 'test')
   .default('src', 'src')
-  .default('ext', '.coffee')
+  .default('input', 'coffee')
+  .default('output', 'coffee')
+  .default('suffix', 'test')
   .argv
 
-{src, test, ext} = argv
+Exts =
+  coffee: '.coffee'
+  ts: '.ts'
+  js: '.js'
 
-defaults =
-  ".coffee": (input, dest,  depth) ->
+srcDir = argv.src
+testDir = argv.test
+inputType = argv.input
+outputType = argv.output
+suffix = '-'+argv.suffix
+
+# Override by setting file
+cwd = process.cwd()
+optPath = path.join(cwd, 'hartman.json')
+if fs.existsSync optPath
+  opt = require(optPath)
+  srcDir = opt.srcDir if opt.srcDir
+  testDir = opt.testDir if opt.testDir
+  inputType = opt.inputType if opt.inputType
+  outputType = opt.outputType if opt.outputType
+  suffix = '-'+opt.suffix if opt.suffix
+
+defaultHandlerByType =
+  coffee: (inputType, inputPath, dest,  depth) ->
     depthText = path.join (_.times depth, (n) -> '..')...
-    inputExtless = input.replace ".coffee", ''
+    inputExtless = inputPath.replace Exts[inputType], ''
     """
     # require '#{depthText}/#{inputExtless}'
     describe \"#{inputExtless}\", ->
       it "should be written"
     """
 
-  ".js": (input, dest,  depth) ->
+  js: (inputType, inputPath, dest,  depth) ->
     depthText = path.join (_.times depth, (n) -> '..')...
-    inputExtless = input.replace ".coffee", ''
+    inputExtless = inputPath.replace Exts[inputType], ''
+    """
+    // require('#{depthText}/#{inputExtless}')
+    describe(\"#{inputExtless}\", function(){
+      it("should be written")
+    });
+    """
+
+  ts: (inputType, inputPath, dest,  depth) ->
+    depthText = path.join (_.times depth, (n) -> '..')...
+    inputExtless = inputPath.replace Exts[inputType], ''
     """
     // require('#{depthText}/#{inputExtless}')
     describe(\"#{inputExtless}\", function(){
@@ -33,24 +65,27 @@ defaults =
     """
 
 ensureTestDir = ->
-  unless fs.existsSync test
-    mkdirp.sync test
+  unless fs.existsSync testDir
+    mkdirp.sync testDir
 
 generate = ->
-  glob "#{src}/**/*#{ext}", (err, files) ->
-    files.map (f) ->
-      input = f
-      output = f.replace src, test
+  ext = Exts[inputType]
+  glob "#{srcDir}/**/*#{ext}", (err, files) ->
+    files.map (fpath) ->
+      inputPath = fpath
+      outputPath = fpath
+        .replace(srcDir, testDir) # rootdir
+        .replace(Exts[inputType], suffix+Exts[outputType]) # suffix with ext
 
-      depth = f.match(/\//g).length
-      if fs.existsSync output
-        console.log "skip", output
+      depth = fpath.match(/\//g).length
+      if fs.existsSync outputPath
+        console.log "skip", outputPath
       else
-        unless fs.existsSync path.dirname(output)
-          mkdirp.sync path.dirname(output)
-        console.log "create", output
-        result = defaults[ext](input, output, depth)
-        fs.writeFileSync output, result
+        unless fs.existsSync path.dirname(outputPath)
+          mkdirp.sync path.dirname(outputPath)
+        console.log "create", outputPath
+        result = defaultHandlerByType[outputType](inputType, inputPath, outputPath, depth)
+        fs.writeFileSync outputPath, result
 
 module.exports = ->
   ensureTestDir()

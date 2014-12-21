@@ -1,0 +1,7 @@
+{
+  "srcDir": "src",
+  "testDir": "spec",
+  "inputType": "coffee",
+  "outputType": "ts",
+  "suffix": "spec"
+}

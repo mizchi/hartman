@@ -1,3 +1,4 @@
 #!/usr/bin/env node
+require('coffee-script/register');
 hartman = require('../src/hartman');
 hartman();

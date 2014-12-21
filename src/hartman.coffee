@@ -7,8 +7,8 @@ mkdirp = require 'mkdirp'
 argv = require('optimist')
   .default('test', 'test')
   .default('src', 'src')
-  .default('input', 'coffee')
-  .default('output', 'coffee')
+  .default('input', 'js')
+  .default('output', 'js')
   .default('suffix', 'test')
   .argv
 
